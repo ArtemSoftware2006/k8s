@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test1-deployment
+  labels: 
+    app: test1-deployment
+# Описание deployment
+spec: 
+  replicas: 1
+  selector: # Конфигурация селектора
+    matchLabels:
+      project: test1-app
+  # Конфигурация контейнеров
+  template:
+    metadata:
+      labels:
+        project: test1-app
+    # Конфигурация самих контейнеров
+    spec:
+      containers:
+        - name: test-api
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test1-service
+  labels:
+    app: test1-service
+spec:
+  type: NodePort
+  selector:
+    project: test1-app
+  ports:
+    - name: app-listener
+      protocol: TCP
+      nodePort: 30001
+      port: 80
+      targetPort: 80
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: 
+  name: test1-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: test1-deployment
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageutilization: 60
+
+  

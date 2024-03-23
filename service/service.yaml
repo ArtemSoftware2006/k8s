@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: app-service-deployment
+  labels:
+    app: app-service
+spec: 
+  replicas: 3
+  selector:
+    matchLabels:
+      project: app
+  template:
+    metadata:
+      labels:
+        project: app # Selecting Pods with those Labels
+    spec: 
+      containers:
+        - name: test-app
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: single-pod-service
+  labels:
+    env: dev
+    owner: Artem
+spec:
+  type: ClusterIP
+  selector:
+    project: app # Selecting Pods with those Labels
+  ports:
+    - name: app-listener
+      protocol: TCP
+      port: 80 # Port Service
+      targetPort: 80 # Port Pod
+
