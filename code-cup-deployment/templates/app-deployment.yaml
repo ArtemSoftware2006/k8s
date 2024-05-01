@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: {{ .Release.Name }}-app
+    labels:
+        app: {{ .Release.Name }}-app
+spec:
+    replicas: {{ .Values.appReplicaCount }}
+    selector:
+        matchLabels:
+            project: {{ .Release.Name }}-app
+    template:
+        metadata:
+            labels: 
+                project: {{ .Release.Name }}-app
+        spec:
+            containers:
+                - name: {{ .Release.Name }}-app
+                  image: {{ .Values.appImage }}
+                  ports:
+                    - containerPort: 80
+                  env: 
+                    - name: ASPNETCORE_ENVIRONMENT
+                      value: Development
+                    - name: ConnectionStrings__DefaultConnection
+                      value:  {{ .Values.connectionString }}
+                    - name: DomainName
+                      value: "http://localhost:3000"
+                  readinessProbe:
+                  # проверка готовности с помощью запроса HTTP
+                    httpGet:
+                      path: /Group/CreateGroup
+                      port: 80
+                    periodSeconds: 2
+                    initialDelaySeconds: 10
+                    failureThreshold: 1
+                    successThreshold: 1

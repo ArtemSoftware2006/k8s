@@ -1,0 +1,5 @@
+appImage: "artem06/code-masters:1.6"
+dbImage: "mysql:8.0.31"
+appReplicaCount: 1
+dbReplicaCount: 1
+connectionString: "Server=app1-db;Database=code_masters;user=root;password=1111;Pooling=true;Max Pool Size=50"
