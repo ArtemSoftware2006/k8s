@@ -1,0 +1,11 @@
+apiVersion: v2
+name: app-chart
+description: Helm chart for Kubernetes
+version: 0.1.0
+keywords:
+  - Kubernetes
+  - Helm
+  - example
+  - demo
+sources:
+  - http://example.com/app-chart

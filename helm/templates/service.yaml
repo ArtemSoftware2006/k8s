@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+  labels: 
+    env: dev
+spec:
+  type: ClusterIP
+  selector:
+    project: {{ .Release.Name }}-proj
+  ports:
+    - name: {{ .Release.Name }}-listener
+      protocol: TCP
+      port: 8001
+      targetPort: 80
